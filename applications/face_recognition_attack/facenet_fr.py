@@ -14,11 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
 from PIL import Image
 import sys
 from scipy import misc
+import imageio
+
 import os
 import time
 
@@ -28,7 +32,7 @@ sys.path.append("../../")
 from  adversarialbox.attacks.tf.tools import  fgsm
 
 
-sys.path.append("../thirdparty/facenet/src")
+sys.path.append("../../thirdparty/facenet/src")
 import facenet
 
 
@@ -36,7 +40,7 @@ FACENET_MODEL_CHECKPOINT = "20180402-114759.pb"
 
 
 def get_pic_from_png(pic_path):
-    img = misc.imread(os.path.expanduser(pic_path), mode='RGB')
+    img = imageio.imread(os.path.expanduser(pic_path))#, mode='RGB')
     return regularize_pic(img)
 
 def regularize_pic(img):
@@ -137,7 +141,8 @@ class FacenetFR():
 
 
         #损失函数小于adv_loss_stop 认为满足需要了 退出
-        adv_loss_stop=0.01
+        adv_loss_stop=0.08
+        # adv_loss_stop=0.01
         #loss阈值 衡量前后两次loss差别过小 认为已经稳定了 收敛了 连续loss_cnt_threshold次小于loss_limit退出
         loss_limit = 0.0008
         loss_cnt_threshold = 10
